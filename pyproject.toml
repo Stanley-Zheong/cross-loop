@@ -23,3 +23,14 @@ cross-loop = "cross_loop.cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["cross_loop*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E731"]  # lambda test helpers are fine
