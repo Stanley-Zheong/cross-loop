@@ -56,11 +56,7 @@ def load_global_config(path: Optional[str]) -> Dict[str, Any]:
 
 def resolve_tools_dir(explicit: Optional[str], global_cfg: Dict[str, Any]) -> str:
     """Figure out where the per-tool adapter YAML files live."""
-    candidate = (
-        explicit
-        or os.environ.get("CROSS_LOOP_TOOLS_DIR")
-        or global_cfg.get("tools_dir")
-    )
+    candidate = explicit or os.environ.get("CROSS_LOOP_TOOLS_DIR") or global_cfg.get("tools_dir")
     if candidate:
         return str(Path(candidate).expanduser())
     # default search: ./config/tools, then the dir next to this package
@@ -76,9 +72,7 @@ def load_tool_config(tools_dir: str, name: str) -> Dict[str, Any]:
     p = Path(tools_dir).expanduser() / f"{name}.yaml"
     if not p.exists():
         available = ", ".join(list_tools(tools_dir)) or "(none)"
-        raise FileNotFoundError(
-            f"no tool config '{name}' in {tools_dir}. Available: {available}"
-        )
+        raise FileNotFoundError(f"no tool config '{name}' in {tools_dir}. Available: {available}")
     cfg = _read_yaml(p)
     cfg.setdefault("name", name)
     if "command" not in cfg:
