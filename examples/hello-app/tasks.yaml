@@ -1,0 +1,24 @@
+# A runnable example. With --dry-run it prints the commands without needing any
+# tool installed:
+#   cross-loop run --tasks examples/hello-app/tasks.yaml --dry-run
+project: hello-app
+
+defaults:
+  tool: claude-code
+  model: sonnet
+  max_retries: 3
+
+tasks:
+  - id: scaffold
+    prompt: "Create a minimal Node project: package.json plus an index.js that exports add(a,b)."
+    verify: "node -e \"require('./index.js')\""
+
+  - id: tests
+    prompt: "Add a test file test.js using node:test that checks add(2,3) === 5."
+    verify: "node --test"
+    depends_on: [scaffold]
+
+  - id: readme
+    prompt: "Write a short README.md documenting the add() function."
+    # No verify command: dispatch success counts as done.
+    depends_on: [tests]

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cross-loop"
+version = "0.1.0"
+description = "A tiny orchestration skill that drives multiple AI coding CLIs (Claude Code, Codex, Cursor, OpenCode...) through a phase-based, self-verifying build loop."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "zhang" }]
+keywords = ["ai", "agents", "orchestration", "claude-code", "codex", "cursor", "opencode", "ralph-loop"]
+dependencies = ["PyYAML>=6.0"]
+
+[project.urls]
+Homepage = "https://github.com/zhang/cross-loop"
+Repository = "https://github.com/zhang/cross-loop"
+
+[project.scripts]
+cross-loop = "cross_loop.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cross_loop*"]

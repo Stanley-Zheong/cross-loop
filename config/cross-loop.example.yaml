@@ -1,0 +1,20 @@
+# Global cross-loop configuration.
+# Copy to cross-loop.yaml (or point at it with --config / $CROSS_LOOP_CONFIG).
+# Every value here is a default; per-task settings and CLI flags override it.
+
+# Which tool to use when a task/phase doesn't name one. Must match a file in
+# the tools directory (config/tools/<name>.yaml).
+default_tool: claude-code
+
+# Convergence budget: how many times to retry a phase before marking it
+# needs_attention.
+max_retries: 3
+
+# If true, the whole loop halts when any phase exhausts its retries.
+stop_on_failure: false
+
+# Per-attempt timeout in seconds (0 = no timeout).
+timeout: 0
+
+# Where to find the per-tool adapter configs. Defaults to ./config/tools.
+# tools_dir: ./config/tools

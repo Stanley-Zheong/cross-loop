@@ -1,0 +1,32 @@
+# Adapter for Anthropic's Claude Code CLI.
+# Docs: https://docs.claude.com  (verify flags against your installed version)
+name: claude-code
+command: claude
+
+# How to run a single non-interactive (headless) prompt.
+# `claude -p "<prompt>"` runs once and prints the result. Slash commands work
+# inside the prompt string, e.g. "/gsd:execute-phase 1".
+prompt_args: ["-p", "{prompt}"]
+
+# How the model is selected.
+model_args: ["--model", "{model}"]
+
+# Flags that allow fully unattended execution (enabled only with `--yolo`).
+# WARNING: --dangerously-skip-permissions lets the tool run any command without
+# asking. Use only inside an isolated checkout / container.
+autonomous_args: ["--dangerously-skip-permissions"]
+
+# A safer alternative to the blanket skip above: instead of --yolo, set the
+# tool's allowed tools explicitly. Uncomment and adapt, then drop the
+# autonomous_args line.
+# autonomous_args: ["--allowedTools", "Edit Write Bash(npm test:*)"]
+
+default_model: sonnet
+models:
+  - opus
+  - sonnet
+  - haiku
+
+# Claude Code understands slash commands embedded in the prompt — this is how
+# GSD / GStack / Superpowers commands get invoked.
+supports_slash_commands: true

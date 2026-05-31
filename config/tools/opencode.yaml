@@ -1,0 +1,21 @@
+# Adapter for OpenCode (https://opencode.ai) — the open-source terminal agent.
+# Verify subcommand/flags against your installed version before relying on this.
+name: opencode
+command: opencode
+
+# OpenCode runs a single message non-interactively with `opencode run "<prompt>"`.
+prompt_args: ["run", "{prompt}"]
+
+# Model is given as "provider/model"; pass it via the --model flag.
+model_args: ["--model", "{model}"]
+
+# OpenCode executes autonomously by default in `run` mode; no extra flag needed.
+autonomous_args: []
+
+default_model: anthropic/claude-sonnet-4-6
+models:
+  - anthropic/claude-opus-4-6
+  - anthropic/claude-sonnet-4-6
+  - openai/gpt-5-codex
+
+supports_slash_commands: false

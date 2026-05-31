@@ -1,0 +1,23 @@
+# cross-loop runtime state
+*.state.json
+.cross-loop/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+
+# local helper (not part of the project)
+setup-github.sh
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/

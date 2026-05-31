@@ -1,0 +1,23 @@
+# Adapter for OpenAI's Codex CLI.
+# Verify the exact subcommand/flags against your installed `codex` version —
+# this file is just a template you are meant to edit.
+name: codex
+command: codex
+
+# Codex runs a non-interactive task with `codex exec "<prompt>"`.
+prompt_args: ["exec", "{prompt}"]
+
+# Model selection flag.
+model_args: ["-m", "{model}"]
+
+# Unattended execution. `--full-auto` (a.k.a. yolo) lets it act without prompts.
+autonomous_args: ["--full-auto"]
+
+default_model: gpt-5-codex
+models:
+  - gpt-5-codex
+  - o4-mini
+
+# Codex does not share Claude Code's slash-command extensions; phases routed to
+# codex run as plain execution (no Superpowers / GStack auto-trigger).
+supports_slash_commands: false

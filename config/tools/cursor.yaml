@@ -1,0 +1,22 @@
+# Adapter for Cursor's headless agent CLI (`cursor-agent`).
+# Verify subcommand/flags against your installed version before relying on this.
+name: cursor
+command: cursor-agent
+
+# Run a one-shot prompt in print/non-interactive mode.
+prompt_args: ["-p", "{prompt}"]
+
+# Model selection flag.
+model_args: ["--model", "{model}"]
+
+# Unattended execution: allow the agent to run without per-action confirmation.
+autonomous_args: ["--force"]
+
+default_model: sonnet
+models:
+  - sonnet
+  - opus
+  - gpt-5
+  - auto
+
+supports_slash_commands: false

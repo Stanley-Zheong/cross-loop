@@ -1,0 +1,40 @@
+# cross-loop tasks file — the decomposed spec, one entry per phase.
+#
+# Copy this, fill in your phases, then:  cross-loop run --tasks tasks.yaml
+
+# Optional human-friendly project name.
+project: my-app
+
+# Optional working directory the tools run in (your project repo). Overridden
+# by the --cwd flag.
+# cwd: /absolute/path/to/project
+
+# Defaults applied to every phase unless the phase overrides them.
+defaults:
+  tool: claude-code      # must match config/tools/<name>.yaml
+  model: sonnet
+  max_retries: 3
+
+tasks:
+  - id: phase-1-scaffold
+    # A slash command works for Claude-Code-based tools (GSD/GStack/Superpowers):
+    prompt: "/gsd:execute-phase 1"
+    # The convergence gate: phase is done only when this exits 0.
+    verify: "npm run build"
+
+  - id: phase-2-auth
+    # Or freeform text — Superpowers will auto-trigger TDD inside the session.
+    prompt: >-
+      Implement the authentication module described in SPEC.md.
+      Write the tests first, then the implementation. Do not touch unrelated files.
+    verify: "npm test -- auth"
+    depends_on: [phase-1-scaffold]
+
+  - id: phase-3-api
+    prompt: "/gsd:execute-phase 3"
+    verify: "npm test -- api"
+    depends_on: [phase-2-auth]
+    # Per-phase overrides take precedence over `defaults` (but not over CLI flags):
+    tool: codex
+    model: gpt-5-codex
+    max_retries: 5
