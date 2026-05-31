@@ -53,9 +53,7 @@ def run_loop(
         or defaults.get("max_retries")
         or global_cfg.get("max_retries", 3)
     )
-    stop_on_failure = overrides.get(
-        "stop_on_failure", global_cfg.get("stop_on_failure", False)
-    )
+    stop_on_failure = overrides.get("stop_on_failure", global_cfg.get("stop_on_failure", False))
     autonomous = overrides.get("yolo", False)
     dry_run = overrides.get("dry_run", False)
     timeout = (overrides.get("timeout") or global_cfg.get("timeout") or 0) or None
@@ -108,9 +106,7 @@ def run_loop(
                 prompt = base_prompt + FEEDBACK_TEMPLATE.format(
                     n=attempt - 1, output=_tail(last_out)
                 )
-            cmd = dispatch.build_command(
-                tool_cfg, prompt, model=model, autonomous=autonomous
-            )
+            cmd = dispatch.build_command(tool_cfg, prompt, model=model, autonomous=autonomous)
             log(f"[attempt {attempt}/{max_retries}] $ {_join(cmd)}")
 
             if dry_run:
@@ -139,13 +135,13 @@ def run_loop(
             state.update(task_id, attempts=attempt, last_output=_tail(last_out, 2000))
 
         if success:
-            state.update(task_id, status=DONE, attempts=attempt,
-                         last_output=_tail(last_out, 2000))
+            state.update(task_id, status=DONE, attempts=attempt, last_output=_tail(last_out, 2000))
             completed.add(task_id)
             log(f"[done] {task_id} after {attempt} attempt(s)")
         else:
-            state.update(task_id, status=NEEDS_ATTENTION, attempts=attempt,
-                         last_output=_tail(last_out, 2000))
+            state.update(
+                task_id, status=NEEDS_ATTENTION, attempts=attempt, last_output=_tail(last_out, 2000)
+            )
             log(f"[needs_attention] {task_id} failed after {attempt} attempt(s)")
             if stop_on_failure:
                 log("stop_on_failure set — halting loop")

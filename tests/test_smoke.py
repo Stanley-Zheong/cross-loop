@@ -1,9 +1,7 @@
 """Smoke tests that don't require any real coding CLI to be installed."""
 
-import json
 from pathlib import Path
 
-import pytest
 
 from cross_loop import config as cfgmod
 from cross_loop.dispatch import build_command
@@ -65,11 +63,7 @@ def test_loop_converges_on_retry(tmp_path):
     verify = f"test $(wc -l < '{counter}') -ge 2"
 
     tool_loader = lambda name: {"command": str(mock), "prompt_args": ["{prompt}"]}
-    doc = {
-        "tasks": [
-            {"id": "p1", "prompt": "do work", "verify": verify, "max_retries": 5}
-        ]
-    }
+    doc = {"tasks": [{"id": "p1", "prompt": "do work", "verify": verify, "max_retries": 5}]}
     state = State(str(tmp_path / "t.state.json"))
     run_loop(
         doc,

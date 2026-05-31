@@ -164,10 +164,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--cwd", help="working directory the tools run in")
     p_run.add_argument("--timeout", type=int, help="per-attempt timeout in seconds")
     p_run.add_argument("--yolo", action="store_true", help="enable a tool's autonomous flags")
-    p_run.add_argument("--stop-on-failure", action="store_true",
-                       help="halt the loop if a phase exhausts retries")
-    p_run.add_argument("--dry-run", action="store_true",
-                       help="print the commands without executing them")
+    p_run.add_argument(
+        "--stop-on-failure", action="store_true", help="halt the loop if a phase exhausts retries"
+    )
+    p_run.add_argument(
+        "--dry-run", action="store_true", help="print the commands without executing them"
+    )
     p_run.set_defaults(func=cmd_run)
 
     p_status = sub.add_parser("status", help="show progress")
