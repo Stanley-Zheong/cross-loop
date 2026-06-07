@@ -21,3 +21,4 @@ setup-github.sh
 *.swp
 .idea/
 .vscode/
+*.memory.json

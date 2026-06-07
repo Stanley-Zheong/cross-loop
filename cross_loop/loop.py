@@ -10,9 +10,10 @@ a real test, bounded by a retry ceiling.
 from __future__ import annotations
 
 import shlex
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Optional
 
 from cross_loop import dispatch, verify
+from cross_loop.memory import Memory
 from cross_loop.state import DONE, NEEDS_ATTENTION, RUNNING, State
 
 FEEDBACK_TEMPLATE = (
@@ -43,6 +44,7 @@ def run_loop(
     global_cfg: Dict[str, Any],
     overrides: Dict[str, Any],
     log: Callable[[str], None],
+    memory: Optional[Memory] = None,
 ) -> State:
     defaults = tasks_doc.get("defaults", {})
     tasks = tasks_doc.get("tasks", [])
@@ -99,6 +101,15 @@ def run_loop(
         success = False
         attempt = 0
         last_out = ""
+        last_fail_out = ""
+
+        mem_block = ""
+        if memory is not None:
+            relevant = memory.relevant(task_id)
+            mem_block = memory.render(relevant)
+            if mem_block:
+                log(f"[memory] injected {len(relevant)} lesson(s) into {task_id}")
+
         while attempt < max_retries:
             attempt += 1
             prompt = base_prompt
@@ -106,6 +117,8 @@ def run_loop(
                 prompt = base_prompt + FEEDBACK_TEMPLATE.format(
                     n=attempt - 1, output=_tail(last_out)
                 )
+            if mem_block:
+                prompt = mem_block + "\n" + prompt
             cmd = dispatch.build_command(tool_cfg, prompt, model=model, autonomous=autonomous)
             log(f"[attempt {attempt}/{max_retries}] $ {_join(cmd)}")
 
@@ -130,6 +143,7 @@ def run_loop(
             if success:
                 break
 
+            last_fail_out = last_out
             note = "will retry" if attempt < max_retries else "out of retries"
             log(f"  verification failed — {note}")
             state.update(task_id, attempts=attempt, last_output=_tail(last_out, 2000))
@@ -137,11 +151,15 @@ def run_loop(
         if success:
             state.update(task_id, status=DONE, attempts=attempt, last_output=_tail(last_out, 2000))
             completed.add(task_id)
+            if memory is not None and attempt > 1 and last_fail_out:
+                memory.record(task_id, "resolved", last_fail_out)
             log(f"[done] {task_id} after {attempt} attempt(s)")
         else:
             state.update(
                 task_id, status=NEEDS_ATTENTION, attempts=attempt, last_output=_tail(last_out, 2000)
             )
+            if memory is not None:
+                memory.record(task_id, "failure", last_out)
             log(f"[needs_attention] {task_id} failed after {attempt} attempt(s)")
             if stop_on_failure:
                 log("stop_on_failure set — halting loop")
