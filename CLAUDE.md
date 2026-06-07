@@ -22,6 +22,7 @@ When a side-effect surfaces mid-task, check it against the stated scope: in scop
 - Install with test deps: `pip install -e ".[dev]"` (pulls in `pytest`). On an externally-managed Python (Homebrew/PEP 668), use a venv first: `python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"`.
 - Run tests: `pytest tests/` (or `.venv/bin/pytest`) — they do not require the real CLI tools to be installed.
 - Run the loop: `cross-loop run --tasks tasks.yaml --tool claude-code --model opus`
+- Carry lessons across phases/runs: add `--memory` — failures are recorded to a `*.memory.json` file (gitignored, beside the state file) and injected into later phases' prompts so a fresh worker benefits from what earlier phases already learned. Off by default.
 - Resume / inspect: `cross-loop status`
 
 ## Code style

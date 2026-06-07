@@ -18,6 +18,7 @@ import yaml
 from cross_loop import __version__
 from cross_loop import config as cfgmod
 from cross_loop.loop import run_loop
+from cross_loop.memory import Memory, memory_path_for
 from cross_loop.state import State
 
 
@@ -99,7 +100,15 @@ def cmd_run(args) -> int:
 
     log(f"cross-loop {__version__}")
     log(f"tasks={tasks_path}  state={state_path}  tools_dir={tools_dir}")
-    run_loop(doc, state, loader, global_cfg=global_cfg, overrides=overrides, log=log)
+
+    memory = None
+    if args.memory:
+        mem_path = memory_path_for(state_path)
+        memory = Memory.load(mem_path)
+        carried = len(memory.data.get("learnings", []))
+        log(f"memory={mem_path}  ({carried} lesson(s) carried in)")
+
+    run_loop(doc, state, loader, global_cfg=global_cfg, overrides=overrides, log=log, memory=memory)
     _print_status(doc, state)
     # exit non-zero if anything still needs attention
     unfinished = any(not state.is_done(t["id"]) for t in doc["tasks"])
@@ -111,6 +120,10 @@ def cmd_status(args) -> int:
     state_path = args.state or _default_state_path(tasks_path)
     state = State.load(state_path)
     _print_status(doc, state)
+    mem_path = memory_path_for(state_path)
+    if Path(mem_path).exists():
+        n = len(Memory.load(mem_path).data.get("learnings", []))
+        print(f"memory: {n} lesson(s) in {mem_path}")
     return 0
 
 
@@ -169,6 +182,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_run.add_argument(
         "--dry-run", action="store_true", help="print the commands without executing them"
+    )
+    p_run.add_argument(
+        "--memory",
+        action="store_true",
+        help="carry lessons across phases/runs: record failures, inject them into later prompts",
     )
     p_run.set_defaults(func=cmd_run)
 
