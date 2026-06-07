@@ -19,7 +19,8 @@ When a side-effect surfaces mid-task, check it against the stated scope: in scop
 ## Commands
 
 - Install (editable): `pip install -e .` — or `pipx install .` for a global CLI.
-- Run tests: `pytest tests/` (smoke tests; they do not require the real CLI tools to be installed).
+- Install with test deps: `pip install -e ".[dev]"` (pulls in `pytest`). On an externally-managed Python (Homebrew/PEP 668), use a venv first: `python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"`.
+- Run tests: `pytest tests/` (or `.venv/bin/pytest`) — they do not require the real CLI tools to be installed.
 - Run the loop: `cross-loop run --tasks tasks.yaml --tool claude-code --model opus`
 - Resume / inspect: `cross-loop status`
 
