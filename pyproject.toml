@@ -13,6 +13,9 @@ authors = [{ name = "zhang" }]
 keywords = ["ai", "agents", "orchestration", "claude-code", "codex", "cursor", "opencode", "ralph-loop"]
 dependencies = ["PyYAML>=6.0"]
 
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
 [project.urls]
 Homepage = "https://github.com/zhang/cross-loop"
 Repository = "https://github.com/zhang/cross-loop"
@@ -34,3 +37,6 @@ target-version = "py39"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E731"]  # lambda test helpers are fine
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
