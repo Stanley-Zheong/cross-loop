@@ -1,5 +1,15 @@
 # cross-loop
 
+## Multica 项目信息
+
+| 字段 | 内容 |
+|---|---|
+| 项目名 | cross-loop |
+| 负责人 | hcode |
+| Git 项目 | https://github.com/Stanley-Zheong/cross-loop.git |
+| 运行环境信息 | Python >= 3.9；setuptools；运行依赖 PyYAML；CLI 入口 `cross-loop`。 |
+| 测试集及测试数据信息 | `tests/`，示例任务在 `examples/` 和 `templates/tasks.example.yaml`。 |
+
 > A tiny orchestration layer that drives **multiple AI coding CLIs** — Claude Code, Codex, Cursor, OpenCode and more — through a phase-based, **self-verifying build loop**.
 
 cross-loop is the small skill that pulls a big lever. By itself it is just a state machine plus a dispatcher: a few hundred lines of Python. But once you have capable CLI tools installed and configured (with their models, plus extensions like Superpowers, GSD, GStack, RalphLoop), cross-loop chains them together — each phase running in a **fresh, isolated process** — so a large project can be built phase by phase, overnight, unattended.
